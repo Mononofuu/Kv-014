@@ -11,6 +11,7 @@ import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.MessageSource;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,6 +28,9 @@ public class HibernatePersistenceProvider<T> implements PersistenceProvider<T> {
 
     @Autowired
     private SessionFactory sessionFactory;
+
+    @Autowired
+    private MessageSource messageSource;
 
     /**
      * Saves the domain object into the relational database.
@@ -90,13 +94,14 @@ public class HibernatePersistenceProvider<T> implements PersistenceProvider<T> {
      * @see Specification
      */
     @Override
-    @Transactional(propagation = Propagation.MANDATORY, readOnly = true )
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = true )
     public Collection<T> find(Specification<T> specification) {
         List<T> data = null;
         try {
             Session session = getSession();
             //TODO -clarify the implementation according to issue 47
-            String hqlQuery = (String) specification.query();
+
+            String hqlQuery = messageSource.getMessage("hql.selectAll",new Object[]{specification.from()},null);
             data = session.createQuery(hqlQuery).list();
         } catch (HibernateException ex) {
             throw new PersistenceException(ex.getMessage(), ex.getCause());

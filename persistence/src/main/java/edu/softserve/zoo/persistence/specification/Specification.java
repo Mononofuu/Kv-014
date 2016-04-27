@@ -13,5 +13,6 @@ public interface Specification<T> {
      * {@link edu.softserve.zoo.persistence.provider.PersistenceProvider}</p>
      * @return the query definition.
      */
-    Object query();
+//    Object query();
+    String from();
 }
