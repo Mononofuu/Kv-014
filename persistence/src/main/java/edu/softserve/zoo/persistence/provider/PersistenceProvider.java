@@ -39,9 +39,9 @@ public interface PersistenceProvider<T> {
      * Finds the collection of domain objects in the persistent storage. The search criteria is defined by the
      * Specification object.
      *
-     * @param specification the specification object that describes the query that should be performed.
-     * @return The collection of domain objects or null if there are no objects in the database that match the query.
-     * @see Specification
+     * @param specification the {@link Query} object that describes the specification that should be performed.
+     * @return The collection of domain objects or null if there are no objects in the database that match the specification.
+     * @see Query
      */
     Collection<T> find(Specification<T> specification);
 }

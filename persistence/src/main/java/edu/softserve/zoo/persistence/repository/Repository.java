@@ -45,8 +45,8 @@ public interface Repository<T extends BaseEntity> {
     /**
      * Finds entities in the repository according to given Specification.
      *
-     * @param specification defines restrictions for performed search.
-     * @return The collection of domain objects or null if there are no objects in the database that match the query.
+     * @param specification defines specification for performed search.
+     * @return The collection of domain objects or null if there are no objects in the database that match the specification.
      * @throws PersistenceException given the information about the problem that occurred with the storage.
      * @see Specification
      */
