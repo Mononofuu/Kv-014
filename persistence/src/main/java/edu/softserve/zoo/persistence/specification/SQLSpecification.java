@@ -6,6 +6,5 @@ package edu.softserve.zoo.persistence.specification;
 public interface SQLSpecification<T> extends Specification<T> {
     Class<T> getType();
 
-    @Override
     String query();
 }

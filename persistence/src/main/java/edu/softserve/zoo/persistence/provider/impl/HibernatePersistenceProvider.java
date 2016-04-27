@@ -14,6 +14,7 @@ import edu.softserve.zoo.persistence.specification.SQLSpecification;
 
 import edu.softserve.zoo.persistence.provider.PersistenceProvider;
 import edu.softserve.zoo.persistence.specification.Specification;
+import org.apache.commons.lang3.ClassUtils;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
@@ -36,6 +37,9 @@ import org.springframework.transaction.annotation.Transactional;
 public class HibernatePersistenceProvider<T> implements PersistenceProvider<T> {
 
     private Map<Class<Specification<T>>, SpecificationProcessor<T>> decisionMap = new HashMap<>();
+
+    @Autowired
+    private MessageSource messageSource;
 
     @Autowired
     private SessionFactory sessionFactory;
@@ -112,13 +116,14 @@ public class HibernatePersistenceProvider<T> implements PersistenceProvider<T> {
     public Collection<T> find(Specification<T> specification) {
         List<T> data = null;
         try {
-            SpecificationProcessor processor = decisionMap.get(specification);
+            List<Class<?>> interfacesList =ClassUtils.getAllInterfaces(specification.getClass());
+            interfacesList.forEach(System.out::println);
+            SpecificationProcessor processor = decisionMap.get(interfacesList.get(0));
+
             data = processor.process(specification);
             Session session = getSession();
-            //TODO -clarify the implementation according to issue 47
 
-            String hqlQuery = messageSource.getMessage("hql.selectAll",new Object[]{specification.from()},null);
-            data = session.createQuery(hqlQuery).list();
+
 
         } catch (HibernateException ex) {
             throw new PersistenceException(ex.getMessage(), ex.getCause());
@@ -149,8 +154,11 @@ public class HibernatePersistenceProvider<T> implements PersistenceProvider<T> {
     private class HQLSpecificationProcessor implements SpecificationProcessor<T> {
         @Override
         public List<T> process(Specification<T> specification) {
-            HQLSpecification<T> speca = (HQLSpecification<T>) specification;
-            return getSession().createQuery(speca.query()).list();
+            HQLSpecification<T> hqlSpecification = (HQLSpecification<T>) specification;
+            String hqlQuery = messageSource.getMessage(hqlSpecification.queryIdentifier(),
+                    null,null);
+            return getSession().createQuery(hqlQuery).list();
+
         }
     }
 }

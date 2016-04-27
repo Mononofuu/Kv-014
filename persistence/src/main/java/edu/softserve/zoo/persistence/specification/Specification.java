@@ -14,5 +14,4 @@ public interface Specification<T> {
      * @return the query definition.
      */
 //    Object query();
-    String from();
 }

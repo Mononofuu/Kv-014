@@ -9,6 +9,5 @@ public interface CriteriaSpecification<T> extends Specification<T>{
 
     Class<T> getType();
 
-    @Override
     Criterion query();
 }

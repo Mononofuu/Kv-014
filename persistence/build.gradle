@@ -10,4 +10,5 @@ dependencies {
     testCompile hsqldb
     compile 'org.springframework:spring-orm:4.2.5.RELEASE'
     compile 'org.hibernate:hibernate-entitymanager:5.1.0.Final'
+    compile apache_commons_lang
 }

@@ -5,6 +5,7 @@ package edu.softserve.zoo.persistence.specification;
  */
 public interface HQLSpecification<T> extends Specification<T> {
 
-    @Override
-    String query();
+//    String from();
+    String queryIdentifier();
+//    String query();
 }
