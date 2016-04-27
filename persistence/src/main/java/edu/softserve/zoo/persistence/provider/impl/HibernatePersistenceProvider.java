@@ -3,14 +3,21 @@ package edu.softserve.zoo.persistence.provider.impl;
 import edu.softserve.zoo.persistence.exception.PersistenceException;
 
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import edu.softserve.zoo.persistence.provider.PersistenceProvider;
-import edu.softserve.zoo.persistence.query.Query;
+import edu.softserve.zoo.persistence.provider.SpecificationProcessor;
+import edu.softserve.zoo.persistence.specification.CriteriaSpecification;
+import edu.softserve.zoo.persistence.specification.HQLSpecification;
+import edu.softserve.zoo.persistence.specification.SQLSpecification;
 import edu.softserve.zoo.persistence.specification.Specification;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Propagation;
@@ -26,14 +33,24 @@ import org.springframework.transaction.annotation.Transactional;
 @Component
 public class HibernatePersistenceProvider<T> implements PersistenceProvider<T> {
 
+    private Map<Class<Specification<T>>, SpecificationProcessor<T>> decisionMap = new HashMap<>();
+
     @Autowired
     private SessionFactory sessionFactory;
+
+    private static final Logger LOGGER = LoggerFactory.getLogger(HibernatePersistenceProvider.class);
+    public HibernatePersistenceProvider() {
+        decisionMap.put((Class<Specification<T>>)(Class<?>) CriteriaSpecification.class, new CriteriaSpecificationProcessor());
+        decisionMap.put((Class<Specification<T>>)(Class<?>) SQLSpecification.class, new SQLSpecificationProcessor());
+        decisionMap.put((Class<Specification<T>>)(Class<?>) HQLSpecification.class, new HQLSpecificationProcessor());
+    }
 
     /**
      * Saves the domain object into the relational database.
      * @param entity - an object that should be saved.
      * @return saved entity with generated identifier.
      */
+
 
     @Override
     @Transactional(propagation = Propagation.MANDATORY)
@@ -44,7 +61,6 @@ public class HibernatePersistenceProvider<T> implements PersistenceProvider<T> {
             return entity;
         } catch (HibernateException ex) {
             throw new PersistenceException(ex.getMessage(), ex.getCause());
-            //TODO add logging properly (after issue #42)
         }
     }
 
@@ -63,7 +79,6 @@ public class HibernatePersistenceProvider<T> implements PersistenceProvider<T> {
             return entity;
         } catch (HibernateException ex) {
             throw new PersistenceException(ex.getMessage(), ex.getCause());
-            //TODO add logging properly (after issue #42)
         }
     }
 
@@ -79,32 +94,54 @@ public class HibernatePersistenceProvider<T> implements PersistenceProvider<T> {
             session.delete(entity);
         } catch (HibernateException ex) {
             throw new PersistenceException(ex.getMessage(), ex.getCause());
-            //TODO add logging properly (after issue #42)
         }
     }
 
     /**
      * Finds the collection of domain objects in the relational database. The search criteria is defined by the
      * Specification object.
-     * @param query the {@link Query} object that describes the query that should be performed.
-     * @return The collection of domain objects or null if there are no objects in the database that match the query.
-     * @see Query
+     * @param specification the {@link Specification} object that describes the specification that should be performed.
+     * @return The collection of domain objects or null if there are no objects in the database that match the specification.
+     * @see Specification
      */
     @Override
     @Transactional(propagation = Propagation.MANDATORY, readOnly = true )
-    public Collection<T> find(Query<T> query) {
+    public Collection<T> find(Specification<T> specification) {
         List<T> data = null;
         try {
-            Session session = getSession();
-            data = query.performQuery(session);
+            SpecificationProcessor processor = decisionMap.get(specification);
+            data = processor.process(specification);
         } catch (HibernateException ex) {
             throw new PersistenceException(ex.getMessage(), ex.getCause());
-            //TODO add logging properly (after issue #42)
         }
         return data;
     }
 
     private Session getSession() {
         return sessionFactory.getCurrentSession();
+    }
+
+    private class CriteriaSpecificationProcessor implements SpecificationProcessor<T> {
+        @Override
+        public List<T> process(Specification<T> specification) {
+            CriteriaSpecification<T> speca = (CriteriaSpecification<T>) specification;
+            return getSession().createCriteria(speca.getType()).add(speca.query()).list();
+        }
+    }
+
+    private class SQLSpecificationProcessor implements SpecificationProcessor<T> {
+        @Override
+        public List<T> process(Specification<T> specification) {
+            SQLSpecification<T> speca = (SQLSpecification<T>) specification;
+            return getSession().createSQLQuery(speca.query()).addEntity(speca.getType()).list();
+        }
+    }
+
+    private class HQLSpecificationProcessor implements SpecificationProcessor<T> {
+        @Override
+        public List<T> process(Specification<T> specification) {
+            HQLSpecification<T> speca = (HQLSpecification<T>) specification;
+            return getSession().createQuery(speca.query()).list();
+        }
     }
 }

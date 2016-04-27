@@ -2,8 +2,8 @@ package edu.softserve.zoo.persistence.repository.impl;
 
 import edu.softserve.zoo.model.BaseEntity;
 import edu.softserve.zoo.persistence.provider.PersistenceProvider;
-import edu.softserve.zoo.persistence.query.Query;
 import edu.softserve.zoo.persistence.repository.Repository;
+import edu.softserve.zoo.persistence.specification.Specification;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.Collection;
@@ -51,7 +51,7 @@ public abstract class AbstractRepository<T extends BaseEntity> implements Reposi
      * {@inheritDoc}
      */
     @Override
-    public Collection<T> find(Query<T> query) {
-        return persistenceProvider.find(query);
+    public Collection<T> find(Specification<T> specification) {
+        return persistenceProvider.find(specification);
     }
 }
