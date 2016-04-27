@@ -6,6 +6,7 @@ import java.util.Collection;
 import java.util.List;
 
 import edu.softserve.zoo.persistence.provider.PersistenceProvider;
+import edu.softserve.zoo.persistence.query.Query;
 import edu.softserve.zoo.persistence.specification.Specification;
 import org.hibernate.HibernateException;
 import org.hibernate.Session;
@@ -85,19 +86,17 @@ public class HibernatePersistenceProvider<T> implements PersistenceProvider<T> {
     /**
      * Finds the collection of domain objects in the relational database. The search criteria is defined by the
      * Specification object.
-     * @param specification the specification object that describes the query that should be performed.
+     * @param query the {@link Query} object that describes the query that should be performed.
      * @return The collection of domain objects or null if there are no objects in the database that match the query.
-     * @see Specification
+     * @see Query
      */
     @Override
     @Transactional(propagation = Propagation.MANDATORY, readOnly = true )
-    public Collection<T> find(Specification<T> specification) {
+    public Collection<T> find(Query<T> query) {
         List<T> data = null;
         try {
             Session session = getSession();
-            //TODO -clarify the implementation according to issue 47
-            String hqlQuery = (String) specification.query();
-            data = session.createQuery(hqlQuery).list();
+            data = query.performQuery(session);
         } catch (HibernateException ex) {
             throw new PersistenceException(ex.getMessage(), ex.getCause());
             //TODO add logging properly (after issue #42)

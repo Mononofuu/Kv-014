@@ -1,5 +1,6 @@
 package edu.softserve.zoo.persistence.provider;
 
+import edu.softserve.zoo.persistence.query.Query;
 import edu.softserve.zoo.persistence.specification.Specification;
 
 import java.util.Collection;
@@ -39,9 +40,9 @@ public interface PersistenceProvider<T> {
      * Finds the collection of domain objects in the persistent storage. The search criteria is defined by the
      * Specification object.
      *
-     * @param specification the specification object that describes the query that should be performed.
+     * @param query the {@link Query} object that describes the query that should be performed.
      * @return The collection of domain objects or null if there are no objects in the database that match the query.
-     * @see Specification
+     * @see Query
      */
-    Collection<T> find(Specification<T> specification);
+    Collection<T> find(Query<T> query);
 }
