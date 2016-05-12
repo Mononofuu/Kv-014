@@ -17,8 +17,8 @@
     </bean>
 
     <!-- Creates db schema and populates data -->
-    <jdbc:initialize-database data-source="dataSource">
-        <jdbc:script location="classpath:db_resources/create_db.sql"/>
-        <jdbc:script location="classpath:db_resources/populate_db.sql"/>
-    </jdbc:initialize-database>
+    <!--<jdbc:initialize-database data-source="dataSource">-->
+        <!--<jdbc:script location="classpath:db_resources/create_db.sql"/>-->
+        <!--<jdbc:script location="classpath:db_resources/populate_db.sql"/>-->
+    <!--</jdbc:initialize-database>-->
 </beans>
