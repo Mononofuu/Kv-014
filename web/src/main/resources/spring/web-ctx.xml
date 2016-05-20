@@ -14,23 +14,4 @@
         <mvc:mapping path="/api/**"/>
     </mvc:cors>
 
-    <mvc:annotation-driven content-negotiation-manager="contentNegotiationManager">
-        <mvc:message-converters>
-            <bean class="org.springframework.http.converter.json.MappingJackson2HttpMessageConverter">
-                <property name="objectMapper">
-                    <bean class="com.fasterxml.jackson.databind.ObjectMapper">
-                        <property name="serializationInclusion" value="NON_NULL"/>
-                    </bean>
-                </property>
-            </bean>
-        </mvc:message-converters>
-    </mvc:annotation-driven>
-
-    <bean id="contentNegotiationManager"
-          class="org.springframework.web.accept.ContentNegotiationManagerFactoryBean">
-        <property name="defaultContentType" value="application/json"/>
-    </bean>
-
-    <context:component-scan
-            base-package="edu.softserve.zoo.controller.rest, edu.softserve.zoo.converter, edu.softserve.zoo.advice"/>
 </beans>
