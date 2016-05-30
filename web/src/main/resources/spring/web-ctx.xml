@@ -9,6 +9,7 @@
 
     <import resource="classpath:spring/service-ctx.xml"/>
     <import resource="classpath:spring/web-common-ctx.xml"/>
+    <import resource="security-ctx.xml"/>
 
     <mvc:cors>
         <mvc:mapping path="/api/**"
@@ -33,5 +34,6 @@
     </bean>
 
     <context:component-scan
-            base-package="edu.softserve.zoo.controller.rest, edu.softserve.zoo.converter, edu.softserve.zoo.advice"/>
+            base-package="edu.softserve.zoo.controller.rest, edu.softserve.zoo.converter, edu.softserve.zoo.advice,
+            edu.softserve.zoo.web.security"/>
 </beans>

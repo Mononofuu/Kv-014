@@ -6,5 +6,9 @@ dependencies {
     compile apache_commons_lang
     compile apache_commons_collections4
     compile apache_commons_commons_beanutils
+    compile spring_security_config
+    compile spring_security_web
+    compile jjwt
+    providedRuntime servlets
     testCompile spring_test
 }
