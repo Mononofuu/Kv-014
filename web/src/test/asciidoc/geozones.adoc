@@ -46,9 +46,6 @@ use of HTTP status codes.
 | `200 OK`
 | Standard response for successful HTTP requests. The actual response will depend on the request method used. In a GET request, the response will contain an entity corresponding to the requested resource. In a POST request, the response will contain an entity describing or containing the result of the action.
 
-| `201 Created`
-| The request has been fulfilled and resulted in a new resource being created.
-
 | `404 Not Found`
 | The requested resource could not be found but may be available again in the future. Subsequent requests by the client are permissible.
 |===
@@ -77,67 +74,3 @@ include::{snippets}/getGeoZone/curl-request.adoc[]
 ==== Example response
 
 include::{snippets}/getGeoZone/http-response.adoc[]
-
-
-[[resource-zones-create]]
-=== Create geo zone
-A `POST` request creates a new geo zone.
-
-==== Request fields
-
-include::{snippets}/postGeoZone/request-fields.adoc[]
-
-==== Response fields
-
-include::{snippets}/postGeoZone/response-fields.adoc[]
-
-==== Example request
-
-include::{snippets}/postGeoZone/curl-request.adoc[]
-
-==== Example response
-
-include::{snippets}/postGeoZone/http-response.adoc[]
-
-
-
-[[resource-zones-update]]
-=== Update geo zone
-A `PATCH` request updates an existing geo zone.
-
-==== Path parameters
-
-include::{snippets}/patchGeoZone/path-parameters.adoc[]
-
-==== Request fields
-
-include::{snippets}/patchGeoZone/request-fields.adoc[]
-
-==== Response fields
-
-include::{snippets}/patchGeoZone/response-fields.adoc[]
-
-==== Example request
-
-include::{snippets}/patchGeoZone/curl-request.adoc[]
-
-==== Example response
-
-include::{snippets}/patchGeoZone/http-response.adoc[]
-
-
-[[resource-zones-delete]]
-=== Delete geo zone
-A `DELETE` request deletes an existing geo zone.
-
-==== Path parameters
-
-include::{snippets}/deleteGeoZone/path-parameters.adoc[]
-
-==== Example request
-
-include::{snippets}/deleteGeoZone/curl-request.adoc[]
-
-==== Example response
-
-include::{snippets}/deleteGeoZone/http-response.adoc[]

@@ -24,24 +24,26 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 public abstract class AbstractCrud extends AbstractTest {
     @Autowired
     ObjectMapper objectMapper;
+
     /**
      * {@code GET} request test
      */
     protected void getOp() throws Exception {
-        RestDocumentationResultHandler document = documentPrettyPrintReqResp("get"+getName());
+        RestDocumentationResultHandler document = documentPrettyPrintReqResp("get" + getName());
         document.snippets(responseFields(getFields(true, true)));
         this.mockMvc.perform(get(getPath())
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(document);
     }
+
     /**
      * {@code GET} request test
      *
      * @param object map that represents the dto
      */
     protected void postOp(Map<String, Object> object) throws Exception {
-        RestDocumentationResultHandler document = documentPrettyPrintReqResp("post"+getName());
+        RestDocumentationResultHandler document = documentPrettyPrintReqResp("post" + getName());
         document.snippets(
                 requestFields(getFields(false, false)),
                 responseFields(getFields(false, true)));
@@ -50,71 +52,78 @@ public abstract class AbstractCrud extends AbstractTest {
                 .andExpect(status().isOk())
                 .andDo(document);
     }
+
     /**
      * {@code PATCH} request test
      *
      * @param object map that represents the dto
-     * @param id id of entity to update
+     * @param id     id of entity to update
      */
     protected void patchOp(Map<String, Object> object, Long id) throws Exception {
-        RestDocumentationResultHandler document = documentPrettyPrintReqResp("patch"+getName());
+        RestDocumentationResultHandler document = documentPrettyPrintReqResp("patch" + getName());
         document.snippets(
-                pathParameters(parameterWithName("id").description("id of "+StringUtils.uncapitalize(getName()))),
+                pathParameters(parameterWithName("id").description("id of " + StringUtils.uncapitalize(getName()))),
                 requestFields(getFields(false, false, object)),
                 responseFields(getFields(false, true)));
-        this.mockMvc.perform(patch(getPath()+"/{id}", id)
+        this.mockMvc.perform(patch(getPath() + "/{id}", id)
                 .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(object)))
                 .andExpect(status().isOk())
                 .andDo(document);
     }
+
     /**
      * {@code PUT} request test
      *
      * @param object map that represents the dto
-     * @param id id of entity to update
+     * @param id     id of entity to update
      */
     protected void putOp(Map<String, Object> object, Long id) throws Exception {
-        RestDocumentationResultHandler document = documentPrettyPrintReqResp("put"+getName());
+        RestDocumentationResultHandler document = documentPrettyPrintReqResp("put" + getName());
         document.snippets(
-                pathParameters(parameterWithName("id").description("id of "+StringUtils.uncapitalize(getName()))),
+                pathParameters(parameterWithName("id").description("id of " + StringUtils.uncapitalize(getName()))),
                 requestFields(getFields(false, false)),
                 responseFields(getFields(false, true)));
-        this.mockMvc.perform(put(getPath()+"/{id}", id)
+        this.mockMvc.perform(put(getPath() + "/{id}", id)
                 .contentType(MediaType.APPLICATION_JSON).content(objectMapper.writeValueAsString(object)))
                 .andExpect(status().isOk())
                 .andDo(document);
     }
+
     /**
      * {@code DELETE} request test
      *
      * @param id id of entity to delete
      */
     protected void deleteOp(Long id) throws Exception {
-        RestDocumentationResultHandler document = documentPrettyPrintReqResp("delete"+StringUtils.uncapitalize(getName()));
-        document.snippets(pathParameters(parameterWithName("id").description("id of "+getName())));
-        this.mockMvc.perform(delete(getPath()+"/{id}", id)
+        RestDocumentationResultHandler document = documentPrettyPrintReqResp("delete" + StringUtils.uncapitalize(getName()));
+        document.snippets(pathParameters(parameterWithName("id").description("id of " + getName())));
+        this.mockMvc.perform(delete(getPath() + "/{id}", id)
                 .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andDo(document);
     }
+
     /**
      * Returns the REST url
      *
      * @return path url
      */
     protected abstract String getPath();
+
     /**
      * Returns the map of field name as key and its description as value
      *
      * @return map of fields and description
      */
     protected abstract Map<String, String> getFieldsWithDescription();
+
     /**
      * Returns the unique name for folder with snippets
      *
      * @return unique folder name
      */
     protected abstract String getName();
+
     /**
      * Returns array of FieldDescriptor which contains fields with description of request/response body.
      * The result may include {@code id} field, e.g. in {@code POST} response, or may not, e.g. in {@code PATCH} request.
@@ -123,19 +132,18 @@ public abstract class AbstractCrud extends AbstractTest {
      * In order to provide this the method may return only those fields which request object contains.
      *
      * @param isArray whether it is array or not
-     * @param withId whether it includes id or not
-     * @param object object fields will be compared with
-     *
+     * @param withId  whether it includes id or not
+     * @param object  object fields will be compared with
      * @return complete array of field descriptors
      */
     @SafeVarargs
     private final FieldDescriptor[] getFields(boolean isArray, boolean withId, Map<String, Object>... object) {
         return getFieldsWithDescription()
-               .entrySet()
-               .stream()
-               .filter(entry -> withId || !Objects.equals(entry.getKey(), "id"))
-               .filter(entry -> object.length == 0 || object[0].containsKey(entry.getKey()))
-               .map(entry -> fieldWithPath((isArray?"[].":"")+entry.getKey()).description(entry.getValue()))
-               .toArray(FieldDescriptor[]::new);
+                .entrySet()
+                .stream()
+                .filter(entry -> withId || !Objects.equals(entry.getKey(), "id"))
+                .filter(entry -> object.length == 0 || object[0].containsKey(entry.getKey()))
+                .map(entry -> fieldWithPath((isArray ? "[]." : "") + entry.getKey()).description(entry.getValue()))
+                .toArray(FieldDescriptor[]::new);
     }
 }
