@@ -4,6 +4,7 @@ import edu.softserve.zoo.model.BaseEntity;
 import edu.softserve.zoo.persistence.provider.PersistenceProvider;
 import edu.softserve.zoo.persistence.repository.Repository;
 import edu.softserve.zoo.persistence.specification.Specification;
+import edu.softserve.zoo.persistence.specification.impl.CountSpecification;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import java.util.List;
@@ -21,14 +22,19 @@ public abstract class AbstractRepository<T extends BaseEntity> implements Reposi
      * {@inheritDoc}
      */
     @Autowired
-    private PersistenceProvider<T> persistenceProvider;
+    private PersistenceProvider persistenceProvider;
 
     /**
      * {@inheritDoc}
      */
     @Override
     public T findOne(Long id, Class<T> type) {
-        return persistenceProvider.findOne(id, type);
+        return (T) persistenceProvider.findOne(id, type);
+    }
+
+    @Override
+    public Long count(Class<T> type) {
+        return (Long) persistenceProvider.find(new CountSpecification<>(type)).get(0);
     }
 
     /**
@@ -36,7 +42,7 @@ public abstract class AbstractRepository<T extends BaseEntity> implements Reposi
      */
     @Override
     public T save(T entity) {
-        return persistenceProvider.save(entity);
+        return (T) persistenceProvider.save(entity);
     }
 
     /**
@@ -52,7 +58,7 @@ public abstract class AbstractRepository<T extends BaseEntity> implements Reposi
      */
     @Override
     public T update(T entity) {
-        return persistenceProvider.update(entity);
+        return (T) persistenceProvider.update(entity);
     }
 
     /**

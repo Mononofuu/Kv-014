@@ -5,6 +5,8 @@ import java.util.List;
 
 public interface Service<T extends BaseEntity> {
 
+    Long count(Class<T> type);
+
     T findOne(Long id, Class<T> type);
 
     List<T> findAll(Class<T> type);

@@ -7,4 +7,6 @@ dependencies {
     compile apache_commons_collections4
     compile apache_commons_commons_beanutils
     testCompile spring_test
+    testCompile spring_rest_docs
+    testCompile hsqldb
 }
