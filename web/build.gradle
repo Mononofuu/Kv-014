@@ -9,6 +9,6 @@ dependencies {
     compile spring_security_config
     compile spring_security_web
     compile jjwt
-    providedRuntime servlets
+    providedCompile servlets
     testCompile spring_test
 }

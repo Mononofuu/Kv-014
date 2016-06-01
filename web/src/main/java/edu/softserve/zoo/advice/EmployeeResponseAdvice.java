@@ -1,5 +1,6 @@
 package edu.softserve.zoo.advice;
 
+import edu.softserve.zoo.controller.rest.UserController;
 import edu.softserve.zoo.controller.rest.impl.EmployeeRestController;
 import edu.softserve.zoo.dto.EmployeeDto;
 import edu.softserve.zoo.dto.RoleDto;
@@ -21,7 +22,7 @@ import java.util.stream.Stream;
  *
  * @author Julia Siroshtan
  */
-@ControllerAdvice(assignableTypes = EmployeeRestController.class)
+@ControllerAdvice(assignableTypes = {EmployeeRestController.class, UserController.class})
 public class EmployeeResponseAdvice implements ResponseBodyAdvice<Object> {
 
     @Override
